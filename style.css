@@ -1,0 +1,643 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #f0f4ff 0%, #e7ebf5 100%);
+    color: #333;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    height: 100vh;
+    background: url('images/img.jpg') no-repeat center center;
+    background-size: cover;
+    position: relative;
+    padding: 0 20px;
+}
+
+header::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+header h1, header p {
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+header h1 {
+    font-size: clamp(32px, 5vw, 48px);
+    margin-bottom: 30px;
+    color: #fff;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    animation: fadeInUp 1s ease-out;
+}
+
+header p {
+    font-size: clamp(20px, 3.2vw, 28px);
+    font-weight: 200;
+    line-height: 1.5;
+    max-width: 700px;
+    margin-bottom: 50px;
+    color: #f8f9fa;
+    text-shadow: 
+        0 1px 0 rgba(255,255,255,0.1),
+        0 4px 8px rgba(0,0,0,0.6),
+        0 8px 16px rgba(0,0,0,0.3);
+    letter-spacing: 0.5px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+header p {
+  animation: fade-in-slide 1.5s ease-out both;
+}
+@keyframes fade-in-slide {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.scroll-button {
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+    padding: 15px 40px;
+    font-size: 18px;
+    color: #fff;
+    background-color: #ff6f61;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+.scroll-button:hover {
+    background-color: #e65b4d;
+}
+
+.artists {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-auto-rows: minmax(350px, auto);
+    justify-content: center;
+    gap: 40px;
+}
+
+.artist-card {
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease, opacity 1s ease, transform 1s ease;
+    background: transparent;
+    max-width: 350px;
+    width: 100%;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(50px);
+}
+
+/* Классы для разных типов карточек */
+.artist-card.vertical {
+    aspect-ratio: 3/4;
+}
+
+.artist-card.horizontal {
+    aspect-ratio: 4/3;
+}
+
+.artist-card.square {
+    aspect-ratio: 1/1;
+}
+
+/* Если класс не задан, используем вертикальный по умолчанию */
+.artist-card:not(.vertical):not(.horizontal):not(.square) {
+    aspect-ratio: 3/4;
+}
+
+.artist-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.artist-card:hover {
+    transform: scale(1.04);
+}
+
+.artist-image {
+    width: 100%;
+    height: 100%;
+}
+
+.artist-card .swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.artist-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 16px;
+}
+
+.artist-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: transparent;
+    padding: 0;
+    text-align: center;
+    opacity: 1;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    pointer-events: none;
+}
+
+.artist-card:hover .artist-info {
+    /* Убираем это правило, так как artist-info теперь прозрачный */
+}
+
+/* СТИЛИ ДЛЯ ИМЕНИ ХУДОЖНИКА */
+.artist-name {
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    font-size: 25px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #e0f7ff, #b3e5fc, #81d4fa, #4fc3f7, #29b6f6);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: crystalline 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 15px rgba(79, 195, 247, 0.6));
+    z-index: 12;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+@keyframes crystalline {
+    0%, 100% { 
+        background-position: 0% 50%;
+        filter: drop-shadow(0 0 15px rgba(79, 195, 247, 0.6));
+    }
+    50% { 
+        background-position: 100% 50%;
+        filter: drop-shadow(0 0 25px rgba(79, 195, 247, 0.9));
+    }
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes crystalline {
+    0%, 100% { 
+        background-position: 0% 50%;
+        filter: drop-shadow(0 0 15px rgba(79, 195, 247, 0.6));
+    }
+    50% { 
+        background-position: 100% 50%;
+        filter: drop-shadow(0 0 25px rgba(79, 195, 247, 0.9));
+    }
+}
+
+/* Показываем имя при наведении на карточку */
+.artist-card:hover .artist-name {
+    opacity: 1;
+}
+
+/* Социальные иконки в центре */
+.social-icons {
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 15px;
+    z-index: 10;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.artist-card:hover .social-icons {
+    opacity: 1;
+}
+
+.social-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    backdrop-filter: blur(10px);
+}
+
+.twitter-icon-container {
+    background: #000;
+}
+
+.telegram-icon-container {
+    background: #000;
+}
+
+.social-icon:hover {
+    transform: scale(1.1) translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.twitter-icon {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.telegram-icon {
+    color: white;
+    font-size: 20px;
+}
+
+/* СОВРЕМЕННЫЕ СТРЕЛКИ - МИНИМАЛИСТИЧНЫЕ И ЭЛЕГАНТНЫЕ */
+.swiper-button-next, 
+.swiper-button-prev {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px !important;
+    height: 32px !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    backdrop-filter: blur(8px) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    opacity: 0 !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 10 !important;
+    margin-top: 0 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Убираем стандартные стрелки Swiper */
+.swiper-button-next::after, 
+.swiper-button-prev::after {
+    display: none !important;
+}
+
+/* Показываем стрелки при наведении на карточку с плавным появлением */
+.artist-card:hover .swiper-button-next,
+.artist-card:hover .swiper-button-prev {
+    opacity: 0.8 !important;
+}
+
+/* Элегантный эффект при наведении на стрелку */
+.swiper-button-next:hover, 
+.swiper-button-prev:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    transform: translateY(-50%) scale(1.15) !important;
+    opacity: 1 !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Позиционирование стрелок - ближе к краю */
+.swiper-button-prev {
+    left: 10px !important;
+    right: auto !important;
+}
+
+.swiper-button-next {
+    right: 10px !important;
+    left: auto !important;
+}
+
+/* Современные символы стрелок */
+.arrow-icon {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.swiper-button-next:hover .arrow-icon,
+.swiper-button-prev:hover .arrow-icon {
+    color: rgba(0, 0, 0, 0.8);
+    text-shadow: none;
+    transform: scale(1.1);
+}
+
+/* Анимация появления при загрузке */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Медиа запросы для мобильных устройств */
+@media (max-width: 768px) {
+    .swiper-button-next, 
+    .swiper-button-prev {
+        width: 28px !important;
+        height: 28px !important;
+    }
+    
+    .arrow-icon {
+        font-size: 12px;
+    }
+    
+    /* На мобильных показываем стрелки постоянно с меньшей прозрачностью */
+    .swiper-button-next,
+    .swiper-button-prev {
+        opacity: 0.6 !important;
+    }
+
+    .social-icon {
+        width: 45px;
+        height: 45px;
+    }
+
+    .social-icons {
+        gap: 12px;
+    }
+
+    .twitter-icon, .telegram-icon {
+        font-size: 18px;
+    }
+
+    /* Адаптивные стили для имени на мобильных */
+    .artist-name {
+        font-size: 18px;           /* Уменьшенный размер для мобильных */
+        letter-spacing: 1.5px;     /* Уменьшенный интервал */
+    }
+}
+
+/* Замените предыдущий стиль .neon на этот более мягкий вариант */
+
+header p .neon {
+    color: #4dd0e1;
+    font-weight: 600;
+    text-shadow: 
+        0 0 3px rgba(77, 208, 225, 0.8),
+        0 0 6px rgba(77, 208, 225, 0.6),
+        0 0 9px rgba(77, 208, 225, 0.4);
+    animation: softNeonGlow 3s ease-in-out infinite alternate;
+    position: relative;
+    display: inline-block;
+}
+
+@keyframes softNeonGlow {
+    from {
+        text-shadow: 
+            0 0 3px rgba(77, 208, 225, 0.8),
+            0 0 6px rgba(77, 208, 225, 0.6),
+            0 0 9px rgba(77, 208, 225, 0.4);
+    }
+    to {
+        text-shadow: 
+            0 0 2px rgba(77, 208, 225, 0.6),
+            0 0 4px rgba(77, 208, 225, 0.4),
+            0 0 6px rgba(77, 208, 225, 0.3);
+    }
+}
+
+/* Еще более мягкий вариант, если предыдущий все еще слишком яркий */
+header p .neon-subtle {
+    color: #81d4fa;
+    font-weight: 600;
+    text-shadow: 
+        0 0 2px rgba(129, 212, 250, 0.6),
+        0 0 4px rgba(129, 212, 250, 0.4),
+        0 0 6px rgba(129, 212, 250, 0.2);
+    animation: subtleGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes subtleGlow {
+    from {
+        text-shadow: 
+            0 0 2px rgba(129, 212, 250, 0.6),
+            0 0 4px rgba(129, 212, 250, 0.4),
+            0 0 6px rgba(129, 212, 250, 0.2);
+    }
+    to {
+        text-shadow: 
+            0 0 1px rgba(129, 212, 250, 0.4),
+            0 0 3px rgba(129, 212, 250, 0.3),
+            0 0 4px rgba(129, 212, 250, 0.1);
+    }
+}
+
+/* Минимальный неоновый эффект - самый мягкий */
+header p .neon-minimal {
+    color: #b3e5fc;
+    font-weight: 600;
+    text-shadow: 
+        0 0 1px rgba(179, 229, 252, 0.5),
+        0 0 3px rgba(179, 229, 252, 0.3);
+    animation: minimalGlow 5s ease-in-out infinite alternate;
+}
+
+@keyframes minimalGlow {
+    from {
+        text-shadow: 
+            0 0 1px rgba(179, 229, 252, 0.5),
+            0 0 3px rgba(179, 229, 252, 0.3);
+    }
+    to {
+        text-shadow: 
+            0 0 1px rgba(179, 229, 252, 0.3),
+            0 0 2px rgba(179, 229, 252, 0.2);
+    }
+}
+
+/* Добавьте этот CSS в ваш style.css */
+
+/* Звездное небо - добавляем контейнер для звезд */
+.stars-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1; /* Между фоном и контентом */
+    pointer-events: none; /* Чтобы не мешать взаимодействию */
+}
+
+.star {
+    position: absolute;
+    background: white;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    animation: twinkle 3s ease-in-out infinite;
+    opacity: 0.7;
+}
+
+/* Делаем некоторые звезды больше и ярче */
+.star.bright {
+    width: 3px;
+    height: 3px;
+    opacity: 0.9;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+}
+
+.star.large {
+    width: 4px;
+    height: 4px;
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+}
+
+@keyframes twinkle {
+    0%, 100% { 
+        opacity: 0.3; 
+        transform: scale(1); 
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.2); 
+    }
+}
+
+/* Обновляем стили header для лучшей интеграции */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    height: 100vh;
+    background: url('images/img.jpg') no-repeat center center;
+    background-size: cover;
+    position: relative;
+    padding: 0 20px;
+    /* Убираем или делаем менее темным overlay для лучшей видимости звезд */
+}
+
+header::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3); /* Уменьшили с 0.5 до 0.3 */
+    z-index: 1;
+}
+
+/* Обеспечиваем правильную иерархию z-index */
+header h1, header p, .scroll-button {
+    position: relative;
+    z-index: 3; /* Выше звезд */
+}
+
+.artist-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 16px;
+    transition: 0.3s ease-in-out;
+}
+
+/* Авто-класс для горизонтальных изображений */
+.artist-card img.horizontal {
+    object-fit: contain;
+    background-color: #fff;
+}
+
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+    .star.large {
+        width: 3px;
+        height: 3px;
+    }
+    
+    .star.bright {
+        width: 2px;
+        height: 2px;
+    }
+}
+
+/* Дополнительные стили для fade эффекта - добавьте в ваш style.css */
+
+/* Улучшения для fade эффекта в Swiper */
+.artist-card .swiper-slide {
+    transition: opacity 0.6s ease-in-out;
+}
+
+.artist-card .swiper-slide-active {
+    opacity: 1;
+}
+
+.artist-card .swiper-slide:not(.swiper-slide-active) {
+    opacity: 0;
+}
+
+/* Дополнительная анимация для более плавного перехода */
+.artist-card .swiper-wrapper {
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Опционально: добавляем небольшой scale эффект при смене изображений */
+.artist-card .swiper-slide img {
+    transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+}
+
+.artist-card .swiper-slide-active img {
+    transform: scale(1);
+}
+
+/* Улучшенная производительность для анимаций */
+.artist-card .swiper,
+.artist-card .swiper-wrapper,
+.artist-card .swiper-slide {
+    will-change: opacity, transform;
+}
+
+/* Дополнительные стили для более плавной работы на мобильных */
+@media (max-width: 768px) {
+    .artist-card .swiper-slide {
+        transition: opacity 0.4s ease-in-out;
+    }
+}
