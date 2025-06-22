@@ -23,34 +23,43 @@ document.addEventListener('DOMContentLoaded', function() {
         swipers.push(swiper);
     });
 
+    // Массив для хранения таймеров и состояния каждой карточки
+    const cardTimers = [];
+    const cardStates = [];
+
     // Хаотичная смена изображений
     function startChaoticSlideshow() {
         swipers.forEach((swiper, index) => {
-            // Создаем случайный интервал для каждой карточки (от 2 до 6 секунд)
-            const randomInterval = Math.random() * 4000 + 2000;
+            // Инициализируем состояние карточки
+            cardStates[index] = { isHovered: false, timeoutId: null };
             
             function changeSlideRandomly() {
-                if (swiper && swiper.slides && swiper.slides.length > 1) {
-                    // Получаем случайный индекс слайда
-                    const currentIndex = swiper.realIndex;
-                    let randomIndex;
-                    
-                    // Убеждаемся, что новый индекс отличается от текущего
-                    do {
-                        randomIndex = Math.floor(Math.random() * swiper.slides.length);
-                    } while (randomIndex === currentIndex && swiper.slides.length > 1);
-                    
-                    // Переходим к случайному слайду
-                    swiper.slideTo(randomIndex);
+                // Проверяем, не наведен ли курсор на эту карточку
+                if (!cardStates[index].isHovered) {
+                    if (swiper && swiper.slides && swiper.slides.length > 1) {
+                        // Получаем случайный индекс слайда
+                        const currentIndex = swiper.realIndex;
+                        let randomIndex;
+                        
+                        // Убеждаемся, что новый индекс отличается от текущего
+                        do {
+                            randomIndex = Math.floor(Math.random() * swiper.slides.length);
+                        } while (randomIndex === currentIndex && swiper.slides.length > 1);
+                        
+                        // Переходим к случайному слайду
+                        swiper.slideTo(randomIndex);
+                    }
                 }
                 
                 // Устанавливаем новый случайный интервал для следующей смены
                 const nextInterval = Math.random() * 4000 + 2000;
-                setTimeout(changeSlideRandomly, nextInterval);
+                cardStates[index].timeoutId = setTimeout(changeSlideRandomly, nextInterval);
             }
             
+            // Создаем случайный интервал для каждой карточки (от 2 до 6 секунд)
+            const randomInterval = Math.random() * 4000 + 2000;
             // Запускаем смену с начальной задержкой
-            setTimeout(changeSlideRandomly, randomInterval);
+            cardStates[index].timeoutId = setTimeout(changeSlideRandomly, randomInterval);
         });
     }
 
@@ -132,17 +141,47 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Дополнительные эффекты при наведении - приостановка хаотичной смены
+    // Обработчики наведения - приостановка хаотичной смены
     document.querySelectorAll('.artist-card').forEach((card, index) => {
-        let isHovered = false;
-        
         card.addEventListener('mouseenter', () => {
-            isHovered = true;
-            // Можно добавить дополнительные эффекты при наведении
+            // Отмечаем карточку как наведенную
+            if (cardStates[index]) {
+                cardStates[index].isHovered = true;
+                // Очищаем текущий таймер, чтобы остановить смену
+                if (cardStates[index].timeoutId) {
+                    clearTimeout(cardStates[index].timeoutId);
+                    cardStates[index].timeoutId = null;
+                }
+            }
         });
         
         card.addEventListener('mouseleave', () => {
-            isHovered = false;
+            // Снимаем отметку о наведении
+            if (cardStates[index]) {
+                cardStates[index].isHovered = false;
+                
+                // Возобновляем хаотичную смену с новым случайным интервалом
+                const resumeInterval = Math.random() * 3000 + 1500; // Немного быстрее при возобновлении
+                
+                function resumeSlideChange() {
+                    if (!cardStates[index].isHovered && swipers[index] && swipers[index].slides && swipers[index].slides.length > 1) {
+                        const currentIndex = swipers[index].realIndex;
+                        let randomIndex;
+                        
+                        do {
+                            randomIndex = Math.floor(Math.random() * swipers[index].slides.length);
+                        } while (randomIndex === currentIndex && swipers[index].slides.length > 1);
+                        
+                        swipers[index].slideTo(randomIndex);
+                    }
+                    
+                    // Устанавливаем следующий интервал
+                    const nextInterval = Math.random() * 4000 + 2000;
+                    cardStates[index].timeoutId = setTimeout(resumeSlideChange, nextInterval);
+                }
+                
+                cardStates[index].timeoutId = setTimeout(resumeSlideChange, resumeInterval);
+            }
         });
     });
 });
